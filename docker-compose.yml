@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Add your services here
+  # Example:
+  # api:
+  #   build: ./cloud/api-server
+  #   ports:
+  #     - "8080:8080"
+  
+  # mock-service:
+  #   build: ./packages/mocks
+  #   ports:
+  #     - "9090:9090"
+
+networks:
+  sentra-network:
+    driver: bridge
