@@ -1,0 +1,16 @@
+# packages/engine/clippy.toml
+# Linting configuration for high code quality
+
+# Warn on complexity
+cognitive-complexity-threshold = 30
+type-complexity-threshold = 250
+
+# Performance warnings
+too-many-arguments-threshold = 8
+too-many-lines-threshold = 150
+
+# Documentation
+missing-docs-in-public-items = true
+
+# Avoid common pitfalls
+avoid-breaking-exported-api = true
