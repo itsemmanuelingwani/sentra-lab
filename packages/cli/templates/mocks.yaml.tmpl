@@ -1,0 +1,85 @@
+# Mock Service Configuration
+mocks:
+  openai:
+    models:
+      - gpt-4
+      - gpt-4-turbo-preview
+      - gpt-3.5-turbo
+    
+    behavior:
+      latency:
+        min_ms: 500
+        max_ms: 3000
+        distribution: normal
+      
+      rate_limiting:
+        enabled: true
+        rpm: 3500
+        tpm: 90000
+      
+      errors:
+        - type: rate_limit_exceeded
+          probability: 0.01
+          status_code: 429
+          message: "Rate limit reached for requests"
+        
+        - type: service_unavailable
+          probability: 0.005
+          status_code: 503
+          message: "The server is overloaded or not ready yet"
+        
+        - type: timeout
+          probability: 0.002
+          message: "Request timeout"
+    
+    fixtures:
+      responses: fixtures/openai-responses.yaml
+      patterns: fixtures/openai-patterns.yaml
+
+  stripe:
+    behavior:
+      latency:
+        min_ms: 100
+        max_ms: 1000
+        distribution: normal
+      
+      webhooks:
+        enabled: true
+        delivery_delay_ms: 1000
+        retry_on_failure: true
+        max_retries: 3
+      
+      errors:
+        - type: card_declined
+          probability: 0.05
+          decline_code: generic_decline
+        
+        - type: insufficient_funds
+          probability: 0.02
+          decline_code: insufficient_funds
+        
+        - type: rate_limit
+          probability: 0.01
+          status_code: 429
+    
+    fixtures:
+      cards: fixtures/stripe-cards.yaml
+      errors: fixtures/stripe-errors.yaml
+
+  coreledger:
+    behavior:
+      latency:
+        min_ms: 200
+        max_ms: 800
+        distribution: normal
+      
+      errors:
+        - type: insufficient_balance
+          probability: 0.03
+        
+        - type: authorization_failed
+          probability: 0.01
+    
+    fixtures:
+      agents: fixtures/coreledger-agents.yaml
+      policies: fixtures/coreledger-policies.yaml

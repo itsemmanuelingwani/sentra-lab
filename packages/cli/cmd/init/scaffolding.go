@@ -100,10 +100,10 @@ responses:
     response: |
       Here's a code example that addresses your question:
       
-      \`\`\`python
+      ` + "```python" + `
       def example_function():
           return "Hello, World!"
-      \`\`\`
+      ` + "```" + `
     tokens:
       prompt: 25
       completion: 45

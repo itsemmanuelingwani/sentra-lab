@@ -1,0 +1,51 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sentra Lab local data
+.sentra-lab/
+*.db
+recordings/
+
+# Credentials
+credentials
+.env
+.env.local
+
+# Build artifacts
+dist/
+release/
+*.tar.gz
+*.zip
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/

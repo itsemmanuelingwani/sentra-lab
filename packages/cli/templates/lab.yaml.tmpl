@@ -1,0 +1,38 @@
+# Sentra Lab Configuration
+name: {{.ProjectName}}
+version: "1.0"
+
+# Agent configuration
+agent:
+  runtime: {{.Runtime}}  # python, nodejs, go
+  entry_point: {{.EntryPoint}}
+  timeout: 30s
+
+# Mock services
+mocks:
+  openai:
+    enabled: {{.EnableOpenAI}}
+    port: 8080
+    latency_ms: 1000
+    rate_limit: 3500
+    error_rate: 0.01
+  
+  stripe:
+    enabled: {{.EnableStripe}}
+    port: 8081
+    latency_ms: 500
+  
+  coreledger:
+    enabled: {{.EnableCoreLedger}}
+    port: 8082
+
+# Simulation settings
+simulation:
+  record_full_trace: true
+  enable_cost_tracking: true
+  max_concurrent_scenarios: 10
+
+# Storage
+storage:
+  recordings_dir: .sentra-lab/recordings
+  database: .sentra-lab/sentra.db

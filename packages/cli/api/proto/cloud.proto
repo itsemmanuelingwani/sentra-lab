@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package sentra.lab.cloud.v1;
+
+option go_package = "github.com/sentra-lab/cli/api/proto;proto";
+
+service CloudService {
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UploadRun(UploadRunRequest) returns (UploadRunResponse);
+  rpc DownloadRun(DownloadRunRequest) returns (DownloadRunResponse);
+  rpc ListTeamRuns(ListTeamRunsRequest) returns (ListTeamRunsResponse);
+  rpc SyncRuns(SyncRunsRequest) returns (SyncRunsResponse);
+}
+
+message AuthenticateRequest {
+  string token = 1;
+}
+
+message AuthenticateResponse {
+  bool success = 1;
+  User user = 2;
+}
+
+message GetUserRequest {}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string team = 3;
+  string plan = 4;
+}
+
+message UploadRunRequest {
+  string run_id = 1;
+  bytes metadata = 2;
+  bytes recording = 3;
+}
+
+message UploadRunResponse {
+  bool success = 1;
+  string url = 2;
+}
+
+message DownloadRunRequest {
+  string run_id = 1;
+}
+
+message DownloadRunResponse {
+  string run_id = 1;
+  bytes metadata = 2;
+  bytes recording = 3;
+}
+
+message ListTeamRunsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListTeamRunsResponse {
+  repeated CloudRun runs = 1;
+  int32 total = 2;
+}
+
+message CloudRun {
+  string run_id = 1;
+  string scenario = 2;
+  string status = 3;
+  int64 uploaded_at = 4;
+  string uploaded_by = 5;
+}
+
+message SyncRunsRequest {
+  repeated string local_run_ids = 1;
+}
+
+message SyncRunsResponse {
+  int32 uploaded = 1;
+  int32 downloaded = 2;
+  int32 conflicts = 3;
+}

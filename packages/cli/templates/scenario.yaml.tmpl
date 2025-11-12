@@ -1,0 +1,40 @@
+# {{.ScenarioName}} - Test Scenario
+name: "{{.ScenarioName}}"
+description: "{{.Description}}"
+version: "1.0"
+
+variables:
+  user_input: "{{.DefaultInput}}"
+
+steps:
+  - id: "agent-initialization"
+    action: verify_agent_ready
+    expect:
+      - status: ready
+      - timeout: 5s
+  
+  - id: "basic-request"
+    action: agent_request
+    input: "{{.DefaultInput}}"
+    expect:
+      - status: success
+      - response_time: <10s
+      - response_not_empty: true
+  
+  - id: "verify-api-calls"
+    action: assert
+    conditions:
+      - api_calls_made: true
+      - no_errors: true
+  
+  - id: "verify-cost"
+    action: verify_cost
+    expect:
+      - total_cost: <$1.00
+      - execution_time: <30s
+
+error_scenarios:
+  - inject_at: "basic-request"
+    error_type: "rate_limit"
+    expect_retry: true
+    max_retries: 3
