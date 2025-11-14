@@ -1,41 +1,238 @@
-# Dependencies
-node_modules/
-vendor/
-target/
-__pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-dist/
-build/
+# SENTRA LAB - .gitignore
+# Comprehensive ignore rules for multi-language monorepo
 
-# IDE
+#############
+# BUILD ARTIFACTS
+#############
+build/
+dist/
+target/
+*.so
+*.dylib
+*.dll
+*.exe
+*.test
+*.out
+*.bin
+
+#############
+# DEPENDENCIES
+#############
+
+# Go
+go.sum
+vendor/
+
+# Rust
+Cargo.lock
+**/target/
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.pnp.*
+.yarn/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg
+*.egg-info/
+.eggs/
+dist/
+wheels/
+pip-wheel-metadata/
+.Python
+env/
+venv/
+ENV/
+.venv
+
+#############
+# IDE & EDITORS
+#############
+
+# VSCode
 .vscode/
+*.code-workspace
+.history/
+
+# JetBrains (IntelliJ, GoLand, PyCharm, WebStorm)
 .idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Vim
 *.swp
 *.swo
 *~
+.netrwhist
 
-# OS
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Cursor
+.cursor/
+
+#############
+# OS FILES
+#############
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
 
-# Environment
-.env
-.env.local
-*.local
+# Linux
+.directory
+.Trash-*
 
-# Logs
+#############
+# DOCKER & CONTAINERS
+#############
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+#############
+# LOGS
+#############
 *.log
 logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Build artifacts
-*.exe
-*.dll
-*.so
-*.dylib
-*.test
-*.out
+#############
+# TESTING & COVERAGE
+#############
+coverage/
+*.coverprofile
+.nyc_output/
+*.lcov
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+junit.xml
+test-results/
 
-# Docker
-docker-compose.override.yml
+#############
+# SENTRA LAB SPECIFIC
+#############
+
+# Simulations & Recordings
+simulations/
+recordings/
+.sentra-lab/simulations/
+.sentra-lab/recordings/
+
+# Local data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration overrides
+lab.local.yaml
+mocks.local.yaml
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Exports
+exports/
+*.har
+*.junit.xml
+
+# Credentials (NEVER commit these!)
+*.pem
+*.key
+*.crt
+*.p12
+credentials.json
+secrets.yaml
+.secrets
+
+#############
+# CLOUD SPECIFIC (Optional)
+#############
+cloud/
+.cloud/
+terraform.tfstate*
+.terraform/
+
+#############
+# GENERATED CODE
+#############
+*.pb.go
+*.pb.h
+*.pb.cc
+*_pb2.py
+*_pb2_grpc.py
+*.d.ts
+generated/
+
+#############
+# DOCUMENTATION BUILD
+#############
+docs/_build/
+docs/.doctrees/
+site/
+
+#############
+# MISC
+#############
+*.bak
+*.swp
+*.orig
+.snapshots/
+.benchmark/
