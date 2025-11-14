@@ -1,0 +1,97 @@
+description: Generic chat responses for common queries
+category: chat
+
+responses:
+  - id: generic-greeting
+    content: |
+      Hello! I'm an AI assistant. How can I help you today?
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-help
+    content: |
+      I'd be happy to help you with that. Could you provide more details about what you're looking for?
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-confirmation
+    content: |
+      I understand. Let me assist you with that.
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-clarification
+    content: |
+      Could you clarify what you mean? I want to make sure I provide the most accurate information.
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-acknowledgment
+    content: |
+      Thank you for the information. Based on what you've shared, here's what I can help with.
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-explanation
+    content: |
+      Let me explain this concept in a clear way. The key points to understand are:
+
+      1. The fundamental principle involves understanding the core mechanism
+      2. There are several factors that contribute to the overall outcome
+      3. The practical application depends on your specific context
+
+      Would you like me to elaborate on any of these points?
+    role: assistant
+    finish_reason: stop
+    weight: 1.5
+
+  - id: generic-suggestion
+    content: |
+      Based on your question, I have a few suggestions that might help:
+
+      - Consider looking at the foundational aspects first
+      - Take a step-by-step approach to break down the problem
+      - Don't hesitate to ask follow-up questions if something isn't clear
+
+      What would you like to explore further?
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-analysis
+    content: |
+      After analyzing your request, here are my thoughts:
+
+      The situation you've described has several interesting aspects. On one hand, there are clear benefits to the approach you're considering. On the other hand, there are some potential challenges to be aware of.
+
+      The best path forward likely depends on your specific goals and constraints. Would you like me to dive deeper into any particular aspect?
+    role: assistant
+    finish_reason: stop
+    weight: 1.2
+
+  - id: generic-summary
+    content: |
+      To summarize our discussion so far:
+
+      - We've covered the main concepts and how they apply to your situation
+      - There are multiple approaches you could take, each with trade-offs
+      - The next steps would involve evaluating which option aligns best with your needs
+
+      Is there anything specific you'd like to revisit or any new questions?
+    role: assistant
+    finish_reason: stop
+    weight: 1.0
+
+  - id: generic-redirect
+    content: |
+      That's an interesting question! While I can provide some general guidance, you might also want to consider consulting additional resources or experts in this specific area for more detailed information.
+
+      That said, here's what I can share from a general perspective...
+    role: assistant
+    finish_reason: stop
+    weight: 0.8

@@ -1,0 +1,340 @@
+description: Technical explanations and system design responses
+category: chat
+
+responses:
+  - id: technical-architecture
+    pattern: "(architecture|design|system|scalable)"
+    content: |
+      Here's an architectural approach for your system:
+
+      ## System Architecture Overview
+
+      ### High-Level Components
+      1. **API Gateway Layer**: Handles routing, rate limiting, authentication
+      2. **Service Layer**: Microservices for business logic
+      3. **Data Layer**: Database + caching + message queues
+      4. **Infrastructure Layer**: Monitoring, logging, deployment
+
+      ### Design Decisions
+
+      **Scalability Strategy:**
+      - Horizontal scaling at the service layer
+      - Database sharding for data partitioning
+      - CDN for static assets and edge caching
+      - Async processing for non-critical operations
+
+      **Reliability Patterns:**
+      - Circuit breakers for external dependencies
+      - Retry logic with exponential backoff
+      - Health checks and auto-recovery
+      - Multi-region deployment for disaster recovery
+
+      **Performance Optimization:**
+      - Redis for session/cache management
+      - Database read replicas for query distribution
+      - Connection pooling and query optimization
+      - Lazy loading and pagination for large datasets
+
+      ### Technology Stack Recommendation
+      - **Backend**: Go/Node.js for services (high concurrency)
+      - **Database**: PostgreSQL (ACID) + MongoDB (flexibility)
+      - **Cache**: Redis (in-memory performance)
+      - **Queue**: RabbitMQ/Kafka (message processing)
+      - **Infrastructure**: Kubernetes (orchestration) + Docker
+
+      This architecture handles 100K+ requests/second while maintaining 99.99% uptime.
+    role: assistant
+    finish_reason: stop
+    weight: 1.5
+
+  - id: technical-performance
+    pattern: "(performance|optimize|speed|latency)"
+    content: |
+      Let's analyze performance optimization strategies:
+
+      ## Performance Analysis
+
+      ### Current Bottlenecks
+      Based on typical system patterns, the main bottlenecks usually are:
+
+      1. **Database Queries** (60% of latency)
+         - N+1 query problems
+         - Missing indexes
+         - Inefficient joins
+
+      2. **Network I/O** (25% of latency)
+         - External API calls
+         - Database round-trips
+         - File system operations
+
+      3. **CPU-Intensive Operations** (15% of latency)
+         - Complex calculations
+         - Data transformations
+         - Serialization/deserialization
+
+      ### Optimization Strategies
+
+      **Immediate Wins (1-2 weeks):**
+      - Add database indexes on frequently queried columns
+      - Implement query result caching (Redis)
+      - Use connection pooling
+      - Enable gzip compression
+
+      **Medium-Term (1-2 months):**
+      - Denormalize hot data paths
+      - Implement read replicas
+      - Add CDN for static assets
+      - Optimize critical code paths
+
+      **Long-Term (3-6 months):**
+      - Migrate to microservices architecture
+      - Implement event-driven patterns
+      - Add caching layers strategically
+      - Consider moving to edge computing
+
+      ### Measurement & Monitoring
+      - Track P50, P95, P99 latencies
+      - Monitor database query performance
+      - Set up distributed tracing
+      - Establish performance budgets
+
+      Expected improvement: 70-80% latency reduction in critical paths.
+    role: assistant
+    finish_reason: stop
+    weight: 1.3
+
+  - id: technical-security
+    pattern: "(security|authentication|encryption|vulnerability)"
+    content: |
+      Here's a comprehensive security strategy:
+
+      ## Security Implementation
+
+      ### Authentication & Authorization
+      ```
+      Layer 1: API Authentication
+      - JWT tokens with short expiry (15 min)
+      - Refresh tokens (7 days, rotated)
+      - API keys for service-to-service
+
+      Layer 2: Authorization
+      - Role-Based Access Control (RBAC)
+      - Permission checks at service layer
+      - Resource-level permissions
+      - Audit logging for all access
+      ```
+
+      ### Data Protection
+      - **Encryption at Rest**: AES-256 for sensitive data
+      - **Encryption in Transit**: TLS 1.3 for all connections
+      - **Key Management**: AWS KMS / HashiCorp Vault
+      - **PII Handling**: Tokenization + separate storage
+
+      ### Application Security
+      1. **Input Validation**
+         - Sanitize all user inputs
+         - Use parameterized queries (SQL injection prevention)
+         - Validate file uploads (type, size, content)
+         - Rate limiting on endpoints
+
+      2. **Output Encoding**
+         - Escape HTML/JavaScript output
+         - Content Security Policy headers
+         - CORS configuration
+         - X-Frame-Options, X-Content-Type-Options
+
+      3. **Session Management**
+         - Secure cookie flags (HttpOnly, Secure, SameSite)
+         - Session timeout (30 min inactivity)
+         - Concurrent session limits
+         - Logout invalidates all tokens
+
+      ### Security Testing
+      - Automated vulnerability scanning (weekly)
+      - Penetration testing (quarterly)
+      - Dependency vulnerability checks (CI/CD)
+      - Security code reviews (all PRs)
+
+      ### Compliance
+      - GDPR: Data privacy, right to deletion
+      - SOC 2: Security controls documentation
+      - HIPAA: If handling health data
+      - PCI DSS: If processing payments
+
+      This approach provides defense-in-depth across all layers.
+    role: assistant
+    finish_reason: stop
+    weight: 1.4
+
+  - id: technical-database
+    pattern: "(database|schema|migration|query)"
+    content: |
+      Here's a database design approach:
+
+      ## Database Schema Design
+
+      ### Schema Strategy
+      ```sql
+      -- Users table (normalized)
+      CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          email VARCHAR(255) UNIQUE NOT NULL,
+          username VARCHAR(100) UNIQUE NOT NULL,
+          password_hash VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          last_login_at TIMESTAMP,
+          status VARCHAR(20) DEFAULT 'active'
+      );
+
+      CREATE INDEX idx_users_email ON users(email);
+      CREATE INDEX idx_users_username ON users(username);
+      CREATE INDEX idx_users_status ON users(status);
+
+      -- Denormalized table for fast reads
+      CREATE TABLE user_profiles (
+          user_id BIGINT PRIMARY KEY REFERENCES users(id),
+          full_name VARCHAR(200),
+          bio TEXT,
+          avatar_url VARCHAR(500),
+          metadata JSONB,
+          follower_count INT DEFAULT 0,
+          following_count INT DEFAULT 0
+      );
+
+      CREATE INDEX idx_profiles_metadata ON user_profiles USING GIN(metadata);
+      ```
+
+      ### Performance Optimization
+      1. **Indexing Strategy**
+         - B-tree for equality and range queries
+         - GIN/GiST for JSON, full-text search
+         - Partial indexes for filtered queries
+         - Covering indexes for select-heavy queries
+
+      2. **Query Optimization**
+         - Use EXPLAIN ANALYZE for slow queries
+         - Avoid SELECT * (specify columns)
+         - Use JOIN instead of subqueries when possible
+         - Batch operations (bulk inserts/updates)
+
+      3. **Caching Strategy**
+         - Cache frequently accessed data (Redis)
+         - Cache query results (5-minute TTL)
+         - Invalidate on writes
+         - Use cache-aside pattern
+
+      ### Migration Strategy
+      - Version control all schema changes
+      - Zero-downtime migrations:
+        * Add new column (nullable)
+        * Backfill data
+        * Make non-nullable
+        * Remove old column
+      - Rollback plan for each migration
+      - Test on staging first
+
+      ### Scaling Considerations
+      - Read replicas for read-heavy workloads
+      - Partitioning for large tables (time-based)
+      - Sharding when single-node limits reached
+      - Consider NoSQL for specific use cases
+
+      This design handles millions of records efficiently.
+    role: assistant
+    finish_reason: stop
+    weight: 1.2
+
+  - id: technical-devops
+    pattern: "(devops|deployment|ci/cd|docker|kubernetes)"
+    content: |
+      Here's a DevOps implementation strategy:
+
+      ## CI/CD Pipeline
+
+      ### Pipeline Stages
+      ```yaml
+      # .github/workflows/deploy.yml
+      name: Deploy Pipeline
+
+      on: [push, pull_request]
+
+      jobs:
+        test:
+          - Lint code (ESLint, Pylint)
+          - Run unit tests (Jest, pytest)
+          - Check code coverage (>80%)
+          - Security scan (Snyk, SonarQube)
+          
+        build:
+          - Build Docker images
+          - Tag with commit SHA
+          - Push to registry (ECR/GCR)
+          
+        deploy-staging:
+          - Deploy to staging environment
+          - Run integration tests
+          - Run smoke tests
+          - Performance tests
+          
+        deploy-production:
+          - Requires manual approval
+          - Blue-green deployment
+          - Health checks
+          - Rollback on failure
+      ```
+
+      ### Infrastructure as Code
+      ```hcl
+      # Terraform example
+      resource "aws_ecs_cluster" "main" {
+        name = "production-cluster"
+      }
+
+      resource "aws_ecs_service" "api" {
+        name            = "api-service"
+        cluster         = aws_ecs_cluster.main.id
+        task_definition = aws_ecs_task_definition.api.arn
+        desired_count   = 3
+        
+        load_balancer {
+          target_group_arn = aws_lb_target_group.api.arn
+          container_name   = "api"
+          container_port   = 8080
+        }
+      }
+      ```
+
+      ### Deployment Strategies
+      1. **Blue-Green Deployment**
+         - Zero downtime
+         - Instant rollback
+         - Full environment testing
+
+      2. **Canary Deployment**
+         - 5% traffic to new version
+         - Monitor metrics for 30 min
+         - Gradually increase to 100%
+         - Automatic rollback on errors
+
+      3. **Rolling Updates**
+         - Update one instance at a time
+         - Health checks between updates
+         - Maintains availability
+
+      ### Monitoring & Alerting
+      - Prometheus + Grafana for metrics
+      - ELK Stack for log aggregation
+      - PagerDuty for incident management
+      - Uptime monitoring (Pingdom)
+
+      ### Disaster Recovery
+      - Automated backups (hourly snapshots)
+      - Multi-region deployment
+      - Recovery Time Objective: <1 hour
+      - Recovery Point Objective: <15 minutes
+
+      This setup enables 50+ deployments per day safely.
+    role: assistant
+    finish_reason: stop
+    weight: 1.3

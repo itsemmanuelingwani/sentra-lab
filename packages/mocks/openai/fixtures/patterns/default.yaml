@@ -1,0 +1,34 @@
+description: Default pattern mappings for prompt matching
+category: patterns
+
+# These patterns map user prompts to appropriate fixture files
+patterns:
+  - name: code
+    regex: "(write|create|generate|code|function|class|implement|program|script)"
+    fixture: "responses/chat/code.yaml"
+    priority: 10
+
+  - name: creative
+    regex: "(story|poem|creative|imagine|write about|narrative|tale|fiction)"
+    fixture: "responses/chat/creative.yaml"
+    priority: 9
+
+  - name: technical
+    regex: "(architecture|design|system|optimize|performance|security|database|devops)"
+    fixture: "responses/chat/technical.yaml"
+    priority: 8
+
+  - name: question
+    regex: "\\?$"
+    fixture: "responses/chat/generic.yaml"
+    priority: 5
+
+  - name: greeting
+    regex: "^(hi|hello|hey|greetings|good morning|good afternoon|good evening)"
+    fixture: "responses/chat/generic.yaml"
+    priority: 7
+
+  - name: generic
+    regex: ".*"
+    fixture: "responses/chat/generic.yaml"
+    priority: 1

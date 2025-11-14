@@ -1,0 +1,120 @@
+description: Creative writing responses for storytelling and imaginative content
+category: chat
+
+responses:
+  - id: creative-story-opening
+    pattern: "(story|write|tale|narrative)"
+    content: |
+      Once upon a time, in a world not so different from our own, there lived a character whose journey would change everything they thought they knew.
+
+      The morning started like any other, with the familiar sounds of the city waking up. But today, something felt different. There was an electricity in the air, a sense that the ordinary was about to become extraordinary.
+
+      As our protagonist stepped out into the bustling streets, they had no idea that a simple decision—whether to turn left or right at the corner—would set in motion a chain of events that would test their courage, challenge their beliefs, and ultimately reveal who they truly were.
+
+      Would you like me to continue this story, or shall we explore a different direction?
+    role: assistant
+    finish_reason: stop
+    weight: 1.5
+
+  - id: creative-poem
+    pattern: "(poem|poetry|verse|haiku)"
+    content: |
+      Here's a poem inspired by your prompt:
+
+      In whispers soft, the morning light
+      Breaks through the canvas of the night,
+      Each ray a brushstroke, pure and bright,
+      Painting dreams with golden sight.
+
+      The world awakens, fresh and new,
+      With possibilities in every hue,
+      A chance to start, to see things through,
+      To make the ordinary breakthrough.
+
+      In moments small and moments grand,
+      We find the magic close at hand,
+      A universe we understand,
+      Built on grains of time's own sand.
+
+      This captures the essence of what you described. Would you like me to explore this theme further or try a different poetic style?
+    role: assistant
+    finish_reason: stop
+    weight: 1.3
+
+  - id: creative-description
+    pattern: "(describe|imagine|scene|setting)"
+    content: |
+      Let me paint you a picture with words:
+
+      The scene unfolds like a watercolor painting coming to life. Soft edges blend into sharp contrasts, creating a tapestry of sensory details that pull you in completely.
+
+      The atmosphere is thick with anticipation—you can almost taste it on your tongue, feel it prickling your skin. Colors seem more vivid than they should be, sounds carry further than physics would normally allow. It's as if reality has been turned up to eleven, every sense heightened, every detail magnified.
+
+      In the foreground, the immediate catches your eye first—the play of light and shadow, the interplay of textures rough and smooth. But as your gaze expands, you notice the layers: the middle distance where action happens, and the far background where possibilities fade into mystery.
+
+      This is a place where anything could happen, where the rules of the ordinary world bend just slightly, allowing room for the extraordinary to slip through.
+
+      What aspects of this setting would you like me to explore in more detail?
+    role: assistant
+    finish_reason: stop
+    weight: 1.2
+
+  - id: creative-dialogue
+    pattern: "(dialogue|conversation|speak|talk)"
+    content: |
+      Here's a dialogue that captures the moment:
+
+      "You don't understand," she said, her voice barely above a whisper. "This changes everything."
+
+      He leaned back, studying her face. "Maybe I don't. Why don't you help me see it from your perspective?"
+
+      "It's not about perspective," she replied, turning to face the window. The city lights twinkled below like fallen stars. "It's about what's possible when we stop accepting limitations."
+
+      "Limitations keep us safe," he countered gently.
+
+      "Or trapped." She spun around, eyes blazing with conviction. "Tell me something—when was the last time you did something that truly scared you? That made you feel alive?"
+
+      The question hung in the air between them, heavy with unspoken implications. He opened his mouth to respond, then closed it again. Sometimes the most powerful answers were found in silence.
+
+      Would you like me to continue this exchange or explore a different conversational dynamic?
+    role: assistant
+    finish_reason: stop
+    weight: 1.1
+
+  - id: creative-character
+    pattern: "(character|protagonist|personality|develop)"
+    content: |
+      Let me introduce you to a character:
+
+      Meet Alex—though that's just the name the world knows them by. In reality, they're a collection of contradictions wrapped in determination and tied with threads of vulnerability they'd never admit to having.
+
+      On the surface, Alex appears confident, even cocky. They walk into rooms like they own them, speak with the kind of certainty that makes people listen. But look closer, and you'll see the tells: the way their hand moves to their pocket when they're nervous, the slight pause before committing to big decisions, the carefully constructed walls that keep everyone at exactly the right distance.
+
+      They're brilliant with systems—can see patterns where others see chaos, find solutions where others see dead ends. But put them in a purely emotional situation, ask them to navigate the messy realm of feelings without logic to guide them, and you'll watch that confidence crack.
+
+      What shaped them? A childhood that required them to be three steps ahead just to survive. A past mistake that taught them the cost of vulnerability. And a dream they've never spoken aloud but carries with them everywhere—the hope that maybe, just maybe, they can be more than the sum of their defenses.
+
+      Would you like to explore this character further or develop someone different?
+    role: assistant
+    finish_reason: stop
+    weight: 1.4
+
+  - id: creative-world-building
+    pattern: "(world|universe|create|fantasy|sci-fi)"
+    content: |
+      Let me craft a world for you:
+
+      Welcome to a reality where the laws of physics are more like suggestions—polite recommendations that most things follow most of the time, but that bend in the presence of strong enough intention or emotion.
+
+      This is a world of floating cities and underground civilizations, of technology that looks like magic and magic that behaves like science. The boundaries between the two blurred so long ago that no one alive remembers when they were distinct.
+
+      Society is structured around Resonance—the ability to align your personal frequency with the fundamental harmonics of reality. Some people are natural Conductors, able to reshape the world with a thought. Others are Dampeners, their presence stabilizing reality and preventing chaos. Most fall somewhere in between, able to nudge probability in small ways.
+
+      The economy runs on Potential—crystallized possibilities that can be traded, invested, or spent to make things happen. The rich hoard vast reserves of Potential, while the poor scrape by on the random fluctuations of daily chance.
+
+      But recently, something has been changing. The fundamental frequencies are shifting, and no one knows why. Conductors find their powers unstable. Dampeners are losing their grip. And in the spaces between, something entirely new is beginning to emerge.
+
+      What aspect of this world intrigues you most?
+    role: assistant
+    finish_reason: stop
+    weight: 1.5
