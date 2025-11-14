@@ -1,0 +1,143 @@
+# SENTRA LAB - .dockerignore
+# Exclude files from Docker build context for faster builds
+
+#############
+# VERSION CONTROL
+#############
+.git/
+.gitignore
+.gitattributes
+.github/
+
+#############
+# DOCUMENTATION
+#############
+*.md
+docs/
+README.md
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+CODE_OF_CONDUCT.md
+SECURITY.md
+
+#############
+# BUILD ARTIFACTS
+#############
+build/
+dist/
+target/
+*.so
+*.dylib
+*.dll
+*.exe
+*.test
+*.out
+
+#############
+# DEPENDENCIES (will be downloaded in container)
+#############
+
+# Go
+vendor/
+
+# Rust
+**/target/
+Cargo.lock
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+wheels/
+.Python
+env/
+venv/
+ENV/
+.venv
+
+#############
+# IDE & EDITORS
+#############
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+
+#############
+# TESTS
+#############
+tests/
+*_test.go
+*_test.rs
+*.test.ts
+test_*.py
+coverage/
+.coverage
+.nyc_output/
+
+#############
+# CI/CD
+#############
+.github/workflows/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+#############
+# DEVELOPMENT FILES
+#############
+.env
+.env.local
+.env.*.local
+docker-compose*.yml
+Makefile
+
+#############
+# EXAMPLES & FIXTURES (built into specific image layers)
+#############
+examples/
+fixtures/
+
+#############
+# SIMULATIONS & DATA (not needed in image)
+#############
+simulations/
+recordings/
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+#############
+# LOGS
+#############
+*.log
+logs/
+
+#############
+# TEMPORARY FILES
+#############
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+#############
+# OS FILES
+#############
+.DS_Store
+Thumbs.db
+Desktop.ini
