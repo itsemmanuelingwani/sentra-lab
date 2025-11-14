@@ -1,18 +1,332 @@
+# SENTRA LAB - Docker Compose Configuration
+# Production-ready local development environment
 version: '3.8'
 
 services:
-  # Add your services here
-  # Example:
-  # api:
-  #   build: ./cloud/api-server
-  #   ports:
-  #     - "8080:8080"
-  
-  # mock-service:
-  #   build: ./packages/mocks
-  #   ports:
-  #     - "9090:9090"
+  # Simulation Engine (Rust)
+  simulation-engine:
+    image: sentra/lab-engine:latest
+    container_name: sentra-lab-engine
+    hostname: sentra-engine
+    ports:
+      - "50051:50051"  # gRPC API
+      - "9090:9090"    # Metrics (Prometheus)
+    volumes:
+      - ./simulations:/data/simulations:rw
+      - ./scenarios:/data/scenarios:ro
+      - ./recordings:/data/recordings:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # For agent runtime
+    environment:
+      - LOG_LEVEL=info
+      - RUST_BACKTRACE=1
+      - DATA_DIR=/data
+      - RECORDING_ENABLED=true
+      - COMPRESSION_LEVEL=3
+      - MAX_CONCURRENT_SIMULATIONS=100
+      - GRPC_PORT=50051
+      - METRICS_PORT=9090
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "grpc-health-probe", "-addr=:50051"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 1G
 
+  # OpenAI Mock Service (Go)
+  mock-openai:
+    image: sentra/mock-openai:latest
+    container_name: sentra-mock-openai
+    hostname: api.openai.com
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./fixtures/openai:/fixtures:ro
+      - ./config/mocks.yaml:/config/mocks.yaml:ro
+    environment:
+      - LOG_LEVEL=info
+      - PORT=8080
+      - FIXTURES_DIR=/fixtures
+      - TIKTOKEN_CACHE=/tmp/tiktoken
+      - ENABLE_RATE_LIMITING=true
+      - RATE_LIMIT_RPM=3500
+      - DEFAULT_LATENCY_MS=1000
+      - LATENCY_VARIATION_MS=500
+      - ERROR_RATE=0.01
+      - COST_TRACKING=true
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  # Anthropic Mock Service (Go)
+  mock-anthropic:
+    image: sentra/mock-anthropic:latest
+    container_name: sentra-mock-anthropic
+    hostname: api.anthropic.com
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./fixtures/anthropic:/fixtures:ro
+    environment:
+      - LOG_LEVEL=info
+      - PORT=8080
+      - FIXTURES_DIR=/fixtures
+      - ENABLE_RATE_LIMITING=true
+      - DEFAULT_LATENCY_MS=1200
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Stripe Mock Service (Node.js)
+  mock-stripe:
+    image: sentra/mock-stripe:latest
+    container_name: sentra-mock-stripe
+    hostname: api.stripe.com
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./fixtures/stripe:/fixtures:ro
+      - ./data/stripe:/data:rw
+    environment:
+      - LOG_LEVEL=info
+      - PORT=8080
+      - FIXTURES_DIR=/fixtures
+      - DATA_DIR=/data
+      - WEBHOOK_ENABLED=true
+      - WEBHOOK_SIGNING_SECRET=whsec_test_secret
+      - ENABLE_3DS=true
+      - DEFAULT_LATENCY_MS=800
+      - ERROR_RATE=0.02
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  # CoreLedger Mock Service (Go)
+  mock-coreledger:
+    image: sentra/mock-coreledger:latest
+    container_name: sentra-mock-coreledger
+    hostname: api.coreledger.net
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./fixtures/coreledger:/fixtures:ro
+      - ./data/coreledger:/data:rw
+    environment:
+      - LOG_LEVEL=info
+      - PORT=8080
+      - FIXTURES_DIR=/fixtures
+      - DATA_DIR=/data
+      - DEFAULT_LATENCY_MS=500
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # AWS Mock Service (Go)
+  mock-aws:
+    image: sentra/mock-aws:latest
+    container_name: sentra-mock-aws
+    hostname: aws.mock.local
+    ports:
+      - "4566:4566"  # LocalStack-compatible port
+    volumes:
+      - ./fixtures/aws:/fixtures:ro
+      - ./data/aws:/data:rw
+    environment:
+      - LOG_LEVEL=info
+      - PORT=4566
+      - SERVICES=s3,dynamodb,lambda,sqs,sns
+      - DATA_DIR=/data
+      - S3_BUCKET_LIMIT=100
+      - DEFAULT_LATENCY_MS=200
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # PostgreSQL Mock (Go)
+  mock-postgres:
+    image: sentra/mock-postgres:latest
+    container_name: sentra-mock-postgres
+    hostname: postgres.mock.local
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./fixtures/databases/postgres:/fixtures:ro
+      - ./data/postgres:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_USER=mockuser
+      - POSTGRES_PASSWORD=mockpass
+      - POSTGRES_DB=mockdb
+      - LOG_LEVEL=info
+      - QUERY_LATENCY_MS=50
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mockuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB Mock (Go)
+  mock-mongodb:
+    image: sentra/mock-mongodb:latest
+    container_name: sentra-mock-mongodb
+    hostname: mongodb.mock.local
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./fixtures/databases/mongodb:/fixtures:ro
+      - ./data/mongodb:/data/db:rw
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mockuser
+      - MONGO_INITDB_ROOT_PASSWORD=mockpass
+      - LOG_LEVEL=info
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Mock (Go)
+  mock-redis:
+    image: sentra/mock-redis:latest
+    container_name: sentra-mock-redis
+    hostname: redis.mock.local
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data:rw
+    environment:
+      - LOG_LEVEL=info
+      - MAXMEMORY=256mb
+      - MAXMEMORY_POLICY=allkeys-lru
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # SQLite Storage (for engine state)
+  storage:
+    image: alpine:latest
+    container_name: sentra-lab-storage
+    volumes:
+      - ./data:/data
+    command: tail -f /dev/null
+    networks:
+      - sentra-network
+
+  # Prometheus (Metrics Collection)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sentra-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana (Metrics Visualization)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sentra-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infrastructure/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - sentra-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+# Networks
 networks:
   sentra-network:
+    name: sentra-lab-network
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# Volumes
+volumes:
+  prometheus-data:
+    name: sentra-prometheus-data
+  grafana-data:
+    name: sentra-grafana-data
+
+# Volume mappings for persistence
+# ./simulations     - Agent simulation runs
+# ./recordings      - Full execution recordings
+# ./scenarios       - Test scenarios (YAML)
+# ./fixtures        - Mock response fixtures
+# ./data            - Service data (SQLite, Stripe, CoreLedger, AWS)
+# ./config          - Configuration files
